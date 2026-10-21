@@ -1,0 +1,75 @@
+[2026-10-20 14:37:30] scripts: 11_plot_tra.py 12_extract_precip_parcels.py 13_density_precip_parcels.py 14_moisture_contribution.py 15_classify_parcels.py 16_coverage_histo.py 17_inital_q_vs_dtot.py 19_moisture_contribution_daily.py
+[2026-10-20 14:37:30] experiments: 20260814_box_7day_1300 20260814_box_7day_1306 20260814_box_7day_1312 20260814_box_7day_1318 (parallel=1)
+[2026-10-20 14:37:30] === START 20260814_box_7day_1300 ===
+[2026-10-20 14:37:30] === START 20260814_box_7day_1318 ===
+[2026-10-20 14:37:30] === START 20260814_box_7day_1312 ===
+[2026-10-20 14:37:30] === START 20260814_box_7day_1306 ===
+[2026-10-20 14:37:30] [20260814_box_7day_1300] RUN  11_plot_tra.py
+[2026-10-20 14:37:30] [20260814_box_7day_1318] RUN  11_plot_tra.py
+[2026-10-20 14:37:30] [20260814_box_7day_1312] RUN  11_plot_tra.py
+[2026-10-20 14:37:30] [20260814_box_7day_1306] RUN  11_plot_tra.py
+[2026-10-20 14:39:03] [20260814_box_7day_1318] OK   11_plot_tra.py (93s)
+[2026-10-20 14:39:03] [20260814_box_7day_1318] RUN  12_extract_precip_parcels.py
+[2026-10-20 14:39:03] [20260814_box_7day_1306] OK   11_plot_tra.py (93s)
+[2026-10-20 14:39:03] [20260814_box_7day_1306] RUN  12_extract_precip_parcels.py
+[2026-10-20 14:39:03] [20260814_box_7day_1312] OK   11_plot_tra.py (93s)
+[2026-10-20 14:39:03] [20260814_box_7day_1312] RUN  12_extract_precip_parcels.py
+[2026-10-20 14:39:03] [20260814_box_7day_1300] OK   11_plot_tra.py (93s)
+[2026-10-20 14:39:03] [20260814_box_7day_1300] RUN  12_extract_precip_parcels.py
+[2026-10-20 14:39:34] [20260814_box_7day_1300] OK   12_extract_precip_parcels.py (31s)
+[2026-10-20 14:39:34] [20260814_box_7day_1300] RUN  13_density_precip_parcels.py
+[2026-10-20 14:39:37] [20260814_box_7day_1306] OK   12_extract_precip_parcels.py (34s)
+[2026-10-20 14:39:37] [20260814_box_7day_1306] RUN  13_density_precip_parcels.py
+[2026-10-20 14:39:41] [20260814_box_7day_1318] OK   12_extract_precip_parcels.py (38s)
+[2026-10-20 14:39:41] [20260814_box_7day_1318] RUN  13_density_precip_parcels.py
+[2026-10-20 14:39:43] [20260814_box_7day_1300] OK   13_density_precip_parcels.py (9s)
+[2026-10-20 14:39:43] [20260814_box_7day_1300] RUN  14_moisture_contribution.py
+[2026-10-20 14:39:45] [20260814_box_7day_1312] OK   12_extract_precip_parcels.py (42s)
+[2026-10-20 14:39:45] [20260814_box_7day_1312] RUN  13_density_precip_parcels.py
+[2026-10-20 14:39:46] [20260814_box_7day_1306] OK   13_density_precip_parcels.py (9s)
+[2026-10-20 14:39:46] [20260814_box_7day_1306] RUN  14_moisture_contribution.py
+[2026-10-20 14:39:50] [20260814_box_7day_1318] OK   13_density_precip_parcels.py (9s)
+[2026-10-20 14:39:50] [20260814_box_7day_1318] RUN  14_moisture_contribution.py
+[2026-10-20 14:39:55] [20260814_box_7day_1312] OK   13_density_precip_parcels.py (10s)
+[2026-10-20 14:39:55] [20260814_box_7day_1312] RUN  14_moisture_contribution.py
+[2026-10-20 14:39:56] [20260814_box_7day_1300] OK   14_moisture_contribution.py (13s)
+[2026-10-20 14:39:56] [20260814_box_7day_1300] RUN  15_classify_parcels.py
+[2026-10-20 14:40:00] [20260814_box_7day_1306] OK   14_moisture_contribution.py (14s)
+[2026-10-20 14:40:00] [20260814_box_7day_1306] RUN  15_classify_parcels.py
+[2026-10-20 14:40:05] [20260814_box_7day_1318] OK   14_moisture_contribution.py (15s)
+[2026-10-20 14:40:05] [20260814_box_7day_1318] RUN  15_classify_parcels.py
+[2026-10-20 14:40:10] [20260814_box_7day_1312] OK   14_moisture_contribution.py (15s)
+[2026-10-20 14:40:10] [20260814_box_7day_1312] RUN  15_classify_parcels.py
+[2026-10-20 14:40:15] [20260814_box_7day_1300] OK   15_classify_parcels.py (19s)
+[2026-10-20 14:40:15] [20260814_box_7day_1300] RUN  16_coverage_histo.py
+[2026-10-20 14:40:18] [20260814_box_7day_1306] OK   15_classify_parcels.py (18s)
+[2026-10-20 14:40:18] [20260814_box_7day_1306] RUN  16_coverage_histo.py
+[2026-10-20 14:40:20] [20260814_box_7day_1300] OK   16_coverage_histo.py (5s)
+[2026-10-20 14:40:20] [20260814_box_7day_1300] RUN  17_inital_q_vs_dtot.py
+[2026-10-20 14:40:22] [20260814_box_7day_1300] OK   17_inital_q_vs_dtot.py (2s)
+[2026-10-20 14:40:22] [20260814_box_7day_1300] RUN  19_moisture_contribution_daily.py
+[2026-10-20 14:40:24] [20260814_box_7day_1318] OK   15_classify_parcels.py (19s)
+[2026-10-20 14:40:24] [20260814_box_7day_1318] RUN  16_coverage_histo.py
+[2026-10-20 14:40:25] [20260814_box_7day_1306] OK   16_coverage_histo.py (7s)
+[2026-10-20 14:40:25] [20260814_box_7day_1306] RUN  17_inital_q_vs_dtot.py
+[2026-10-20 14:40:26] [20260814_box_7day_1306] OK   17_inital_q_vs_dtot.py (1s)
+[2026-10-20 14:40:26] [20260814_box_7day_1306] RUN  19_moisture_contribution_daily.py
+[2026-10-20 14:40:29] [20260814_box_7day_1312] OK   15_classify_parcels.py (19s)
+[2026-10-20 14:40:29] [20260814_box_7day_1312] RUN  16_coverage_histo.py
+[2026-10-20 14:40:31] [20260814_box_7day_1318] OK   16_coverage_histo.py (7s)
+[2026-10-20 14:40:31] [20260814_box_7day_1318] RUN  17_inital_q_vs_dtot.py
+[2026-10-20 14:40:33] [20260814_box_7day_1318] OK   17_inital_q_vs_dtot.py (2s)
+[2026-10-20 14:40:33] [20260814_box_7day_1318] RUN  19_moisture_contribution_daily.py
+[2026-10-20 14:40:37] [20260814_box_7day_1300] OK   19_moisture_contribution_daily.py (15s)
+[2026-10-20 14:40:37] === DONE 20260814_box_7day_1300 ===
+[2026-10-20 14:40:37] [20260814_box_7day_1312] OK   16_coverage_histo.py (8s)
+[2026-10-20 14:40:37] [20260814_box_7day_1312] RUN  17_inital_q_vs_dtot.py
+[2026-10-20 14:40:39] [20260814_box_7day_1312] OK   17_inital_q_vs_dtot.py (2s)
+[2026-10-20 14:40:39] [20260814_box_7day_1312] RUN  19_moisture_contribution_daily.py
+[2026-10-20 14:40:42] [20260814_box_7day_1306] OK   19_moisture_contribution_daily.py (16s)
+[2026-10-20 14:40:42] === DONE 20260814_box_7day_1306 ===
+[2026-10-20 14:40:50] [20260814_box_7day_1318] OK   19_moisture_contribution_daily.py (17s)
+[2026-10-20 14:40:50] === DONE 20260814_box_7day_1318 ===
+[2026-10-20 14:40:56] [20260814_box_7day_1312] OK   19_moisture_contribution_daily.py (17s)
+[2026-10-20 14:40:56] === DONE 20260814_box_7day_1312 ===
+[2026-10-20 14:40:56] ALL FINISHED (fail=0)

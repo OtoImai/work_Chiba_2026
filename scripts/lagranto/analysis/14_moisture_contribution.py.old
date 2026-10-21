@@ -1,0 +1,212 @@
+import matplotlib as mpl
+mpl.use('Agg')
+import numpy as np
+import pandas as pd
+from datetime import datetime
+import matplotlib.pyplot as plt
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+from matplotlib.collections import LineCollection
+from matplotlib.colors import ListedColormap, BoundaryNorm, LinearSegmentedColormap, Normalize
+import glob
+import os
+import sys
+from synoptic import *
+
+## ======== dirs & files ========
+exp_name = '20260814_box'
+
+base_dir = '/raid/users/imai/work_Chiba_2026'
+work_dir = os.path.join(base_dir, 'Work', exp_name)
+itra_dir = os.path.join(work_dir, '04_post', 'splited')
+
+ofig_dir = os.path.join(base_dir, 'figure', exp_name)
+
+os.makedirs(ofig_dir, exist_ok=True)
+
+ifiles = glob.glob(os.path.join(itra_dir, '*.csv'))
+ofile  = os.path.join(ofig_dir, 'rain_contribution.png')
+
+## ======== parameters for extracting ========
+
+time_diff         = -1.0
+dq_threshold      = 0.2
+rh_threshold      = 80.0
+p_lower_threshold = 850.0
+p_upper_threshold = 500.0
+pbl_threshold     = 850.0
+
+## ======== processing ========
+
+def is_precipitating_parcel(df, time_diff, rh_threshold,
+                            p_lower_threshold, p_upper_threshold):
+    """
+    Parameters:
+        df (pd.DataFrame)         :
+        time_diff (float)         :
+        rh_threshold (float)      :
+        p_lower_threshold (float) :
+
+    Returns:
+        bool:
+    """
+    t0_data     = df[df['time'] == 0.0]
+    t_prev_data = df[df['time'] == time_diff]
+
+    if t0_data.empty or t_prev_data.empty:
+        return False
+
+    Q_t0     = t0_data['Q'].values[0]
+    Q_t_prev = t_prev_data['Q'].values[0]
+    RH_t0    = t0_data['RH'].values[0]
+    P_t0 = t0_data['p'].values[0]
+
+    # 1. Q
+    #cond_precipitation = (Q_t0 < Q_t_prev)
+
+    # 2. RH
+    cond_rh = (RH_t0 >= rh_threshold)
+
+    # 3. Height
+    cond_lower_tropo    = (df['p'].max() >= p_lower_threshold)
+    cond_arrival_height = (P_t0 >= p_upper_threshold)
+
+    # Optional uplifting
+    # cond_uplist = (P_t < 800.0)
+
+    #return cond_precipitation and cond_rh and cond_lower_tropo and cond_arrival_height
+    return cond_rh and cond_lower_tropo and cond_arrival_height
+
+def calculate_moisture_sources(df, dq_threshold, pbl_threshold):
+    """
+
+    """
+    df_forward = df.sort_values('time', ascending=True).reset_index(drop=True)
+    
+    ledger = {}
+    coord_lookup = dict(zip(df_forward['time'], zip(df_forward['lon'], df_forward['lat'])))
+    arrival = df_forward.iloc[-1]
+
+    results = []
+
+    for i in range(1, len(df_forward)):
+        row = df_forward.iloc[i]
+        prev_row = df_forward.iloc[i-1]
+
+        q_current = row['Q']
+        dq = q_current - prev_row['Q']
+        t = row['time']
+        p_prior = prev_row['p']
+
+        if dq > dq_threshold:
+            is_surface = (p_prior >= pbl_threshold)
+            if is_surface:
+                ledger[t] = dq
+            else:
+                ledger[f"above_bl_{t}"] = dq
+
+        elif dq < -dq_threshold and q_current > 0:
+            q_prior = prev_row['Q']
+            keys_to_delete = []
+            
+            for src_time in ledger.keys():
+                f_m = ledger[src_time] / q_prior
+                ledger[src_time] += (dq * f_m)
+                
+                if ledger[src_time] <= 0:
+                    keys_to_delete.append(src_time)
+                    
+            for k in keys_to_delete:
+                del ledger[k]
+
+    for src_time, mass_q in ledger.items():
+        is_surface = not str(src_time).startswith('above_bl')
+        
+        if is_surface:
+            raw_time = src_time
+        else:
+            raw_time = float(str(src_time).replace('above_bl_', ''))
+            
+        src_lon, src_lat = coord_lookup.get(raw_time, (pd.NA, pd.NA))
+        
+        results.append({
+            'source_time': src_time,
+            'source_lon': src_lon,
+            'source_lat': src_lat,
+            'contribution_q': mass_q,
+            'is_surface_source': is_surface,
+            'arrival_lon': arrival['lon'],
+            'arrival_lat': arrival['lat']
+        })
+        
+    return results
+
+## ======== draw setting ========
+lon0, lon1 = 130, 190
+lat0, lat1 = 14, 45
+
+ax_loc = (0.1,0.1,0.8,0.8)
+
+
+cmap = plt.cm.YlGnBu
+levels = np.arange(0, 3.1, 0.1)
+norm = mpl.colors.BoundaryNorm(boundaries=levels, ncolors=cmap.N)
+
+
+## ======== Processing ========
+
+if __name__ == "__main__":
+    grid_size = 0.5
+    lon_bins  = np.arange(lon0, lon1 + grid_size, grid_size)
+    lat_bins  = np.arange(lat0, lat1 + grid_size, grid_size)
+
+    all_source_lons    = []
+    all_source_lats    = []
+    all_source_weights = []
+    extracted_count   = 0
+
+    for f in ifiles:
+        df = pd.read_csv(f)
+        df = df.sort_values('time')
+    
+        if is_precipitating_parcel(df, time_diff, rh_threshold, 
+                                   p_lower_threshold, p_upper_threshold):
+            sources = calculate_moisture_sources(df, dq_threshold=0.0, pbl_threshold=850.0)
+            
+            for src in sources:
+                if src['is_surface_source'] and not pd.isna(src['source_lon']):
+                    all_source_lons.append(src['source_lon'])
+                    all_source_lats.append(src['source_lat'])
+                    all_source_weights.append(src['contribution_q'])
+    
+            extracted_count += 1
+    fig = plt.figure(figsize=(24/2.54,12/2.54))
+    ax, proj, proj_cart = draw_synoptic_chart((lon0,lon1),(lat0,lat1), ax_loc,
+                                xticks=np.arange(90, 191, 10), yticks=np.arange(5, 66, 10))
+
+    ax.add_feature(cfeature.LAND.with_scale('50m'), color="dimgray")
+    ax.add_feature(cfeature.OCEAN.with_scale('50m'), color="lightgray")
+    
+    if extracted_count > 0:
+        density, xedges, yedges = np.histogram2d(all_source_lons, all_source_lats, 
+                                                 bins=[lon_bins, lat_bins], weights=all_source_weights)
+        density = density.T
+        
+        total_moisture = np.sum(density)
+        if total_moisture > 0:
+            density_percent = (density / total_moisture) * 100.0
+        else:
+            density_percent = density
+    
+        density_masked = np.ma.masked_where(density_percent < 0.1, density_percent)
+    
+        
+        if np.max(density_percent) > 0:
+            mesh = ax.pcolormesh(xedges, yedges, density_masked,
+                                 transform=proj_cart, cmap=cmap, norm=norm, shading='flat')
+    
+            cbar = fig.colorbar(mesh, ax=ax, orientation="vertical", pad=0.02)
+            cbar.set_label('Evaporative Source Contribution (%)') 
+
+    plt.savefig(ofile)
+    print(f'figure saved: \n {ofile}')

@@ -1,0 +1,12 @@
+# Images
+*.png
+*.eps
+
+# Data
+*.nc
+*.csv
+*.txt
+
+# Directories
+data/
+Work/

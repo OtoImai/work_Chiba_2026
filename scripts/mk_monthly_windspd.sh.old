@@ -1,0 +1,37 @@
+#!/bin/bash
+set -e -x
+
+BASEDIR=/raid/users/imai/work_Chiba_2026
+CLMDIR="$BASEDIR"/data/clim/single
+MONDIR=/raid/users/imai/ERA5/data/monthly/single
+
+UPAT="u10m_??????.nc"
+VPAT="v10m_??????.nc"
+UVAR=u10
+VVAR=v10
+Y0=1991
+Y1=2020
+
+TMPDIR=$(mktemp -d)
+trap 'rm -rf "$TMPDIR"' EXIT
+
+WMON="$CLMDIR"/wspd_monthly_${Y0}_${Y1}.nc
+WCLM="$CLMDIR"/wspd_monmean_${Y0}_${Y1}.nc
+
+mkdir -p "$CLMDIR"
+ 
+cdo -O -selyear,${Y0}/${Y1} -mergetime "$MONDIR"/$UPAT "$TMPDIR"/u.nc
+cdo -O -selyear,${Y0}/${Y1} -mergetime "$MONDIR"/$VPAT "$TMPDIR"/v.nc
+
+cdo ntime "$TMPDIR"/u.nc
+cdo ntime "$TMPDIR"/v.nc
+
+cdo -O -setattribute,wspd@units="m s-1" \
+    -expr,"wspd=sqrt(${UVAR}*${UVAR}+${VVAR}*${VVAR})" \
+    -merge "$TMPDIR"/u.nc "$TMPDIR"/v.nc "$WMON"
+
+cdo -O ymonmean "$WMON" "$WCLM"
+ 
+cdo sinfo "$WCLM"
+cdo info -fldmean -sellonlatbox,130,150,20,30 "$WCLM"
+ 

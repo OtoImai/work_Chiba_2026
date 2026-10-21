@@ -1,0 +1,38 @@
+# ========= LAGRANTO =========
+LAGRANTO=/raid/users/imai/Work/lagranto.ecmwf # 
+
+# ========= BASE =========
+BASE=/raid/users/imai/work_Chiba_2026
+#EXPNAME=20260814_box_7day					# NEED TO CHANGE
+EXPNAME=make_data
+TOOLDIR="$BASE"/tools
+WORKDIR="$BASE"/Work/"$EXPNAME"
+
+MOISTDIR="$BASE"/Work/Moist/"$EXPNAME" # FOR Moisture Diagnosis
+
+# ========= DATA =========
+ERA5DIR="$BASE"/data/
+INPUT_DATA="$WORKDIR"/01_input_data
+INIT_DATA="$WORKDIR"/02_init_data
+RUN_DATA="$WORKDIR"/03_run
+POST_DATA="$WORKDIR"/04_post
+
+# ========= TIME =========          # NEED TO CHANGE
+START="2026-08-06T07"								# Start Date: YYYY-MM-DDTHH
+TSTEP=1 														# 6hourly
+BACK_HOURS=7											# 
+
+# ========= REGION =========
+REGION1='"1 80 -160 5 65"'
+
+# ========= INIT =========
+D_HPA=20                            # NEED TO CHANGE
+P_BOTTOM=1000                       #
+P_UPPER=200                         #
+
+DP_HPA=$(((P_BOTTOM - P_UPPER) / D_HPA + 1))
+INIT_METHOD="box.eqd(139.5,141.0,34.9,35.9,10)@profile(${P_BOTTOM},${P_UPPER},${DP_HPA})@hPa"
+
+#INIT_METHOD="box.grid(139.7,140.8,34.9,35.9)@profile(${P_BOTTOM},${P_UPPER},${DP_HPA})@hPa"
+#INIT_METHOD="line(140.5,140.5,38.0,41.5,15)@profile(1000,200,${DP_HPA})@hPa"
+
